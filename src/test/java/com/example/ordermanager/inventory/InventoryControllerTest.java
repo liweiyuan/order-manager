@@ -3,10 +3,9 @@ package com.example.ordermanager.inventory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,14 +20,14 @@ class InventoryControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
-  @MockBean
+  @MockitoBean
   private InventoryRepository inventoryRepository;
 
   // We also need to mock InventoryManagement because it is a dependency of
   // OrderController
   // and if InventoryManagement is not mocked, the context will fail to load all
   // required beans
-  @MockBean
+  @MockitoBean
   private InventoryManagement inventoryManagement;
 
   @Test
