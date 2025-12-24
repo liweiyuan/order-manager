@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Unified response wrapper for API responses
+ * 
  * @param <T> The type of data being returned
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)

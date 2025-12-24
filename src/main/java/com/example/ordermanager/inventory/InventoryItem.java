@@ -8,7 +8,9 @@ import org.springframework.util.Assert;
 @Entity
 public class InventoryItem {
 
-  @Id @GeneratedValue private Long id;
+  @Id
+  @GeneratedValue
+  private Long id;
 
   private String name;
   private String description;

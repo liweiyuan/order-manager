@@ -18,13 +18,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(InventoryController.class)
 class InventoryControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @MockBean private InventoryRepository inventoryRepository;
+  @MockBean
+  private InventoryRepository inventoryRepository;
 
-  // We also need to mock InventoryManagement because it is a dependency of OrderController
-  // and if InventoryManagement is not mocked, the context will fail to load all required beans
-  @MockBean private InventoryManagement inventoryManagement;
+  // We also need to mock InventoryManagement because it is a dependency of
+  // OrderController
+  // and if InventoryManagement is not mocked, the context will fail to load all
+  // required beans
+  @MockBean
+  private InventoryManagement inventoryManagement;
 
   @Test
   void getAllInventoryItemsShouldReturnItems() throws Exception {

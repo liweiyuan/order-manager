@@ -9,7 +9,9 @@ import org.springframework.util.Assert;
 @Entity
 public class LineItem {
 
-  @Id @GeneratedValue private Long id;
+  @Id
+  @GeneratedValue
+  private Long id;
 
   private Long inventoryItemId;
   private int quantity;

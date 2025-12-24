@@ -48,25 +48,25 @@ class InventoryService {
                       });
             });
   }
-  
+
   @Async("applicationEventExecutor")
   @EventListener
   void on(OrderStatusUpdated event) {
     LOGGER.info("Order {} status updated from {} to {}.", event.orderId(), event.oldStatus(), event.newStatus());
   }
-  
+
   @Async("applicationEventExecutor")
   @EventListener
   void on(OrderShipped event) {
     LOGGER.info("Order {} has been shipped.", event.orderId());
   }
-  
+
   @Async("applicationEventExecutor")
   @EventListener
   void on(OrderDelivered event) {
     LOGGER.info("Order {} has been delivered.", event.orderId());
   }
-  
+
   @Async("applicationEventExecutor")
   @EventListener
   void on(OrderCancelled event) {

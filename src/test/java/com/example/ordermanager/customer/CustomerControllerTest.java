@@ -17,13 +17,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CustomerController.class)
 class CustomerControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @MockBean private CustomerRepository customerRepository;
+  @MockBean
+  private CustomerRepository customerRepository;
 
-  // We also need to mock CustomerManagement because it is a dependency of OrderController
-  // and if CustomerManagement is not mocked, the context will fail to load all required beans
-  @MockBean private CustomerManagement customerManagement;
+  // We also need to mock CustomerManagement because it is a dependency of
+  // OrderController
+  // and if CustomerManagement is not mocked, the context will fail to load all
+  // required beans
+  @MockBean
+  private CustomerManagement customerManagement;
 
   @Test
   void getAllCustomersShouldReturnCustomers() throws Exception {

@@ -8,7 +8,9 @@ import org.springframework.util.Assert;
 @Entity
 public class Customer {
 
-  @Id @GeneratedValue private Long id;
+  @Id
+  @GeneratedValue
+  private Long id;
 
   private String name;
   private String email;

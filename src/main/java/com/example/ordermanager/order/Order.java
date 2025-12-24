@@ -32,13 +32,14 @@ public class Order {
   private List<LineItem> lineItems = new ArrayList<>();
 
   public Order(Customer customer) {
-    Assert.notNull(customer, "Customer must not be null!");
+    Assert.notNull(customer, "Customer must not be null");
     this.customer = customer;
     this.orderDate = LocalDateTime.now();
     this.status = "PENDING";
   }
 
-  protected Order() {}
+  protected Order() {
+  }
 
   public void addLineItem(Long inventoryItemId, int quantity, BigDecimal price) {
     this.lineItems.add(new LineItem(inventoryItemId, quantity, price));

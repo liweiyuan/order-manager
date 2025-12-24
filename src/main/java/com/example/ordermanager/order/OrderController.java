@@ -60,8 +60,7 @@ public class OrderController {
       Order order = new Order(customerOpt.get());
 
       for (LineItemRequest itemRequest : orderRequest.items()) {
-        Optional<InventoryItem> inventoryItemOpt =
-            inventoryManagement.findById(itemRequest.inventoryItemId());
+        Optional<InventoryItem> inventoryItemOpt = inventoryManagement.findById(itemRequest.inventoryItemId());
         if (inventoryItemOpt.isEmpty()) {
           return ApiResponse.badRequest(
               "Inventory item not found with id: " + itemRequest.inventoryItemId());
@@ -74,13 +73,11 @@ public class OrderController {
 
       var result = orderRepository.save(order);
 
-      List<LineItemData> lineItemDataList =
-          result.getLineItems().stream()
-              .map(
-                  item ->
-                      new LineItemData(
-                          item.getInventoryItemId(), item.getQuantity(), item.getPrice()))
-              .collect(Collectors.toList());
+      List<LineItemData> lineItemDataList = result.getLineItems().stream()
+          .map(
+              item -> new LineItemData(
+                  item.getInventoryItemId(), item.getQuantity(), item.getPrice()))
+          .collect(Collectors.toList());
 
       orderEventPublisher.publishOrderCreated(result.getId(), lineItemDataList);
 
@@ -137,8 +134,11 @@ public class OrderController {
   }
 }
 
-record OrderRequest(Long customerId, List<LineItemRequest> items) {}
+record OrderRequest(Long customerId, List<LineItemRequest> items) {
+}
 
-record LineItemRequest(Long inventoryItemId, int quantity) {}
+record LineItemRequest(Long inventoryItemId, int quantity) {
+}
 
-record StatusUpdateRequest(String status) {}
+record StatusUpdateRequest(String status) {
+}
