@@ -28,6 +28,9 @@ class CustomerManagementImpl implements CustomerManagement {
 
   @Override
   public Optional<Customer> findById(Long id) {
+    if (id == null) {
+      return Optional.empty();
+    }
     return repository.findById(id);
   }
 
@@ -40,7 +43,8 @@ class CustomerManagementImpl implements CustomerManagement {
   @Async("applicationEventExecutor")
   @EventListener
   void on(OrderStatusUpdated event) {
-    LOGGER.info("Order {} status updated from {} to {}.", event.orderId(), event.oldStatus(), event.newStatus());
+    LOGGER.info("Order {} status updated from {} to {}.", event.orderId(), event.oldStatus(),
+        event.newStatus());
   }
 
   @Async("applicationEventExecutor")

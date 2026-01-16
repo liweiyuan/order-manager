@@ -20,6 +20,9 @@ class CustomerController {
 
   @PostMapping
   ApiResponse<Customer> createCustomer(@RequestBody Customer customer) {
+    if (customer == null) {
+      return ApiResponse.error("Customer cannot be null");
+    }
     return ApiResponse.success(customers.save(customer));
   }
 }

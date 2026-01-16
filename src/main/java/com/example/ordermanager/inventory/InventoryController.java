@@ -20,6 +20,9 @@ class InventoryController {
 
   @PostMapping
   ApiResponse<InventoryItem> createInventoryItem(@RequestBody InventoryItem inventoryItem) {
+    if (inventoryItem == null) {
+      return ApiResponse.error("Inventory item cannot be null");
+    }
     return ApiResponse.success(inventory.save(inventoryItem));
   }
 }

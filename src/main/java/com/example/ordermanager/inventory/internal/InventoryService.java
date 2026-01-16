@@ -31,28 +31,26 @@ class InventoryService {
 
     LOGGER.info("Received order confirmation for {}.", event.orderId());
 
-    event
-        .lineItemsData()
-        .forEach(
-            item -> {
-              inventory
-                  .findById(item.inventoryItemId())
-                  .ifPresent(
-                      it -> {
-                        it.setStock(it.getStock() - item.quantity());
-                        inventory.save(it);
-                        LOGGER.info(
-                            "Updated stock for inventory item {}: {}.",
-                            item.inventoryItemId(),
-                            it.getStock());
-                      });
-            });
+    event.lineItemsData().forEach(item -> {
+      Long id = item.inventoryItemId();
+      if (id == null) {
+        LOGGER.warn("Line item for order {} does not have an associated inventory item ID.",
+            event.orderId());
+        return;
+      }
+      inventory.findById(id).ifPresent(it -> {
+        it.setStock(it.getStock() - item.quantity());
+        inventory.save(it);
+        LOGGER.info("Updated stock for inventory item {}: {}.", id, it.getStock());
+      });
+    });
   }
 
   @Async("applicationEventExecutor")
   @EventListener
   void on(OrderStatusUpdated event) {
-    LOGGER.info("Order {} status updated from {} to {}.", event.orderId(), event.oldStatus(), event.newStatus());
+    LOGGER.info("Order {} status updated from {} to {}.", event.orderId(), event.oldStatus(),
+        event.newStatus());
   }
 
   @Async("applicationEventExecutor")

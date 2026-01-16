@@ -18,6 +18,9 @@ class InventoryManagementImpl implements InventoryManagement {
 
   @Override
   public Optional<InventoryItem> findById(Long id) {
+    if (id == null) {
+      return Optional.empty();
+    }
     return repository.findById(id);
   }
 }

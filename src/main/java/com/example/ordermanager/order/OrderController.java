@@ -25,11 +25,8 @@ public class OrderController {
   private final InventoryManagement inventoryManagement;
   private final OrderEventPublisher orderEventPublisher;
 
-  public OrderController(
-      OrderRepository orderRepository,
-      CustomerManagement customerManagement,
-      InventoryManagement inventoryManagement,
-      OrderEventPublisher orderEventPublisher) {
+  public OrderController(OrderRepository orderRepository, CustomerManagement customerManagement,
+      InventoryManagement inventoryManagement, OrderEventPublisher orderEventPublisher) {
     this.orderRepository = orderRepository;
     this.customerManagement = customerManagement;
     this.inventoryManagement = inventoryManagement;
@@ -43,9 +40,11 @@ public class OrderController {
 
   @GetMapping("/{id}")
   public ApiResponse<Order> getOrderById(@PathVariable Long id) {
+    if (id == null) {
+      return ApiResponse.badRequest("Order ID cannot be null");
+    }
     Optional<Order> orderOpt = orderRepository.findById(id);
-    return orderOpt
-        .map(ApiResponse::success)
+    return orderOpt.map(ApiResponse::success)
         .orElseGet(() -> ApiResponse.notFound("Order not found with id: " + id));
   }
 
@@ -60,23 +59,22 @@ public class OrderController {
       Order order = new Order(customerOpt.get());
 
       for (LineItemRequest itemRequest : orderRequest.items()) {
-        Optional<InventoryItem> inventoryItemOpt = inventoryManagement.findById(itemRequest.inventoryItemId());
+        Optional<InventoryItem> inventoryItemOpt =
+            inventoryManagement.findById(itemRequest.inventoryItemId());
         if (inventoryItemOpt.isEmpty()) {
-          return ApiResponse.badRequest(
-              "Inventory item not found with id: " + itemRequest.inventoryItemId());
+          return ApiResponse
+              .badRequest("Inventory item not found with id: " + itemRequest.inventoryItemId());
         }
         // For simplicity, we are not checking stock here, but we should in a real app
         // Also, we'll just use a fixed price for now
-        order.addLineItem(
-            itemRequest.inventoryItemId(), itemRequest.quantity(), new BigDecimal("10.00"));
+        order.addLineItem(itemRequest.inventoryItemId(), itemRequest.quantity(),
+            new BigDecimal("10.00"));
       }
 
       var result = orderRepository.save(order);
 
-      List<LineItemData> lineItemDataList = result.getLineItems().stream()
-          .map(
-              item -> new LineItemData(
-                  item.getInventoryItemId(), item.getQuantity(), item.getPrice()))
+      List<LineItemData> lineItemDataList = result.getLineItems().stream().map(
+          item -> new LineItemData(item.getInventoryItemId(), item.getQuantity(), item.getPrice()))
           .collect(Collectors.toList());
 
       orderEventPublisher.publishOrderCreated(result.getId(), lineItemDataList);
@@ -89,9 +87,12 @@ public class OrderController {
   }
 
   @PutMapping("/{id}/status")
-  public ApiResponse<Order> updateOrderStatus(
-      @PathVariable Long id, @RequestBody StatusUpdateRequest statusUpdate) {
+  public ApiResponse<Order> updateOrderStatus(@PathVariable Long id,
+      @RequestBody StatusUpdateRequest statusUpdate) {
     try {
+      if (id == null) {
+        return ApiResponse.badRequest("Order ID cannot be null");
+      }
       Optional<Order> orderOpt = orderRepository.findById(id);
       if (orderOpt.isEmpty()) {
         return ApiResponse.notFound("Order not found with id: " + id);
@@ -112,8 +113,8 @@ public class OrderController {
       } else if ("DELIVERED".equalsIgnoreCase(newStatus)) {
         orderEventPublisher.publishOrderDelivered(savedOrder.getId());
       } else if ("CANCELLED".equalsIgnoreCase(newStatus)) {
-        orderEventPublisher.publishOrderCancelled(
-            savedOrder.getId(), "Order status updated to cancelled");
+        orderEventPublisher.publishOrderCancelled(savedOrder.getId(),
+            "Order status updated to cancelled");
       }
 
       return ApiResponse.success("Order status updated successfully", savedOrder);
@@ -125,6 +126,9 @@ public class OrderController {
 
   @DeleteMapping("/{id}")
   public ApiResponse<Void> deleteOrder(@PathVariable Long id) {
+    if (id == null) {
+      return ApiResponse.badRequest("Order ID cannot be null");
+    }
     if (orderRepository.existsById(id)) {
       orderRepository.deleteById(id);
       return ApiResponse.success(204, "Order deleted successfully", null);
@@ -134,11 +138,14 @@ public class OrderController {
   }
 }
 
+
 record OrderRequest(Long customerId, List<LineItemRequest> items) {
 }
 
+
 record LineItemRequest(Long inventoryItemId, int quantity) {
 }
+
 
 record StatusUpdateRequest(String status) {
 }

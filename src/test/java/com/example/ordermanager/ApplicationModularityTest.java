@@ -15,6 +15,10 @@ public class ApplicationModularityTest {
 
   @Test
   public void createDocumentation() {
+    if (modules == null) {
+      throw new IllegalStateException("No modules found! Cannot create documentation.");
+
+    }
     new Documenter(modules).writeDocumentation().writeIndividualModulesAsPlantUml();
   }
 }
